@@ -189,9 +189,27 @@ $env:VITE_PIHOLE_PASSWORD = "yourpassword"
 .\build-and-export.ps1
 ```
 
-This builds the Docker image, exports it as `ha-dashboard.tar.gz`, and opens the folder. Upload the file to your NAS and import via Docker Manager.
+This builds the Docker image, exports it as `ha-dashboard.tar.gz`, and opens the folder.
 
-In the Docker Manager container settings, add environment variables for `PIHOLE_HOST` and `NETDATA_HOST` before starting the container.
+**On the NAS:**
+```bash
+# Load the image
+docker load -i ha-dashboard.tar.gz
+
+# Stop and remove any previous container
+docker stop ha-dashboard-1 && docker rm ha-dashboard-1
+
+# Start the new container
+docker run -d \
+  --name ha-dashboard-1 \
+  --restart unless-stopped \
+  -p 3000:80 \
+  -e PIHOLE_HOST=192.168.1.x:8181 \
+  -e NETDATA_HOST=192.168.1.x:19999 \
+  ha-dashboard:latest
+```
+
+`PIHOLE_HOST` and `NETDATA_HOST` are the only env vars needed at runtime — `VITE_*` credentials are already baked into the image from the build step.
 
 ---
 

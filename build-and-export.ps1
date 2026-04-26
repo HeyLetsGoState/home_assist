@@ -6,7 +6,11 @@ $image = "ha-dashboard"
 $output = "ha-dashboard.tar.gz"
 
 Write-Host "`n==> Building Docker image..." -ForegroundColor Cyan
-docker build -t $image .
+docker build `
+  --build-arg VITE_HA_URL=$env:VITE_HA_URL `
+  --build-arg VITE_HA_TOKEN=$env:VITE_HA_TOKEN `
+  --build-arg VITE_PIHOLE_PASSWORD=$env:VITE_PIHOLE_PASSWORD `
+  -t $image .
 
 if ($LASTEXITCODE -ne 0) {
     Write-Host "Build failed!" -ForegroundColor Red
