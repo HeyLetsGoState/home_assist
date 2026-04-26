@@ -33,15 +33,24 @@
 /* Range slider — terminal amber style */
 input[type='range'] {
   appearance: none;
-  height: 2px;
-  background: #1a2428;
+  height: 20px;        /* tall hit area for touch */
+  background: transparent;
   cursor: pointer;
   outline: none;
+}
+input[type='range']::-webkit-slider-runnable-track {
+  height: 2px;
+  background: #1a2428;
+}
+input[type='range']::-moz-range-track {
+  height: 2px;
+  background: #1a2428;
 }
 input[type='range']::-webkit-slider-thumb {
   appearance: none;
   width: 10px;
   height: 10px;
+  margin-top: -4px;    /* center thumb on 2px track */
   background: #ffb454;
   border: none;
   box-shadow: 0 0 6px #ffb45466;
@@ -52,4 +61,12 @@ input[type='range']::-moz-range-thumb {
   background: #ffb454;
   border: none;
   box-shadow: 0 0 6px #ffb45466;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
