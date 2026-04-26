@@ -2,6 +2,8 @@
 
 A self-hosted home monitoring dashboard with a retro terminal (CRT) aesthetic. Built with React + Vite, served via nginx in Docker.
 
+![Dashboard screenshot](docs/screenshot.png)
+
 ## Features
 
 - **Cameras** — Ring camera snapshots with motion alerts, live WebRTC/HLS streams, privacy blur until clicked
@@ -157,6 +159,8 @@ Requires Pi-hole v6. The dashboard authenticates using your admin password via t
 
 Set `VITE_PIHOLE_PASSWORD` in `.env` and `PIHOLE_HOST` to the IP and port of your Pi-hole instance.
 
+> **Port note:** Pi-hole v6's default API port is `8080`, not `8181`. If you installed Pi-hole with a custom port (e.g. running alongside other services), use that port instead. Check your Pi-hole admin panel URL to confirm.
+
 ---
 
 ## Netdata Setup
@@ -200,6 +204,35 @@ npm run dev            # dev server on :3000 with API proxies active
 ```
 
 Changes hot-reload. The Vite dev server proxies `/api/pihole` and `/api/netdata` using the hosts from your `.env`.
+
+---
+
+## Troubleshooting
+
+**`WS:CONNECTING` stuck / everything shows offline**
+- Check `VITE_HA_URL` — must be reachable from your browser, no trailing slash
+- Check `VITE_HA_TOKEN` — generate a new one in HA → Profile → Security if unsure
+- Make sure your HA instance allows external WebSocket connections
+
+**Pi-hole shows `UNREACHABLE`**
+- Verify `PIHOLE_HOST` is correct (IP:port, no `http://`)
+- Default Pi-hole v6 port is `8080` — confirm in your Pi-hole admin panel URL
+- Check `VITE_PIHOLE_PASSWORD` matches your Pi-hole admin password
+
+**Netdata shows `OFFLINE`**
+- Verify `NETDATA_HOST` is correct and Netdata is running (`http://your-nas:19999` should load)
+- Check nginx logs: `docker compose logs dashboard`
+
+**Camera tiles are blank**
+- Verify the `cameraId` entity exists in HA (search `camera.*` in Developer Tools → States)
+- The Ring integration must be configured and connected in HA
+
+**Network card shows `0 kb/s`**
+- The dashboard auto-detects your network interface — check browser console for `[Netdata] using interface:` to see what it picked
+- If wrong, the interface name can be found at `http://your-nas:19999/api/v1/charts` — search for `net.` entries
+
+**Cameras still blurred after clicking**
+- First click reveals the image, second click opens the live stream modal — this is intentional
 
 ---
 

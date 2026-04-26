@@ -46,7 +46,7 @@ Key entities:
 Three CSS grid rows:
 1. Clock (1.4fr) + Weather (1fr)
 2. Cameras (1.2fr) + Lights (1fr) + Network (1fr)
-3. Pi-hole (1.3fr) + Plex (1fr)
+3. Pi-hole (1.3fr) + Plex (1fr) + Netdata (1fr)
 
 Cards receive slices of `states` and relevant HA action functions as props. `CameraCard` uses `callService` directly (for camera snapshot fetching). `PlexCard` reads HA media player states.
 
