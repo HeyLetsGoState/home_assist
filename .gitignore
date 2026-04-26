@@ -5,3 +5,4 @@ dist/
 .gstack/
 ha-dashboard.tar
 ha-dashboard.tar.gz
+.claude/settings.local.json
