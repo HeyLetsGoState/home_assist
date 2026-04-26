@@ -23,7 +23,7 @@ function tempColor(c) {
   return T.green
 }
 
-const lbl = { fontSize: 10, color: T.dim, letterSpacing: '0.06em', marginBottom: 3 }
+const lbl = { ...T.label, marginBottom: 3 }
 const val = { fontWeight: 600, fontVariantNumeric: 'tabular-nums', lineHeight: 1.1 }
 
 function DiskBar({ pct }) {

@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
 import { TermFrame, TermSparkline, T } from './TermFrame'
-
-const HIST = 30
+import { SPARKLINE_HISTORY } from '../config'
 
 export function PiholeCard({ stats, status }) {
-  const [spark, setSpark] = useState(() => Array(HIST).fill(0))
+  const [spark, setSpark] = useState(() => Array(SPARKLINE_HISTORY).fill(0))
 
   const blocked = stats ? Number(stats.ads_blocked_today) : null
 
@@ -25,7 +24,7 @@ export function PiholeCard({ stats, status }) {
   const statusColor = isError ? T.red : T.green
   const statusRight = isError ? 'UNREACHABLE' : isLoading ? 'LOADING…' : 'SHIELDS UP'
 
-  const subLabel = { fontSize: 10, color: T.dim, letterSpacing: '0.06em' }
+  const subLabel = T.label
 
   return (
     <TermFrame title="DNS.PIHOLE" accent={statusColor} right={statusRight}>
@@ -49,7 +48,7 @@ export function PiholeCard({ stats, status }) {
             <div style={{ flex: 1.4 }}>
               <TermSparkline data={spark} color={T.green} h={42} />
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: T.dim, marginTop: 2 }}>
-                <span>T-{HIST}m</span>
+                <span>T-{SPARKLINE_HISTORY}m</span>
                 <span>NOW</span>
               </div>
             </div>

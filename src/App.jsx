@@ -15,6 +15,35 @@ import { PlexCard } from './components/PlexCard'
 import { NetworkCard } from './components/NetworkCard'
 import { NetdataCard } from './components/NetdataCard'
 
+function StatusBar({ connectionStatus, piholeStatus, netdataStatus }) {
+  const services = [
+    { label: 'HA',      ok: connectionStatus === 'connected' },
+    { label: 'PIHOLE',  ok: piholeStatus === 'ok' },
+    { label: 'NETDATA', ok: netdataStatus === 'ok' },
+  ]
+  const allOk = services.every(s => s.ok)
+  return (
+    <div style={{
+      marginTop: 12, padding: '6px 12px',
+      border: `1px solid ${allOk ? T.border : T.red}`,
+      fontSize: 10, color: T.dim,
+      display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4,
+    }}>
+      <span>$ ha-monitor --watch --interval=1s</span>
+      <span style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
+        <span style={{ color: allOk ? T.green : T.red }}>● {allOk ? 'PIPELINE OK' : 'DEGRADED'}</span>
+        {services.map(s => (
+          <span key={s.label} style={{ color: s.ok ? T.dim : T.red }}>
+            {s.label}:<span style={{ color: s.ok ? T.green : T.red }}>{s.ok ? 'OK' : 'ERR'}</span>
+          </span>
+        ))}
+        <span>{ENTITIES.cameras.length} CAM</span>
+        <span>{ENTITIES.lights.length} LIGHT</span>
+      </span>
+    </div>
+  )
+}
+
 export default function App() {
   const { states, connectionStatus, toggleLight, setLightBrightness, setLightColor, callService, getStreamUrl, callWs, sendRaw, subscribeMessage } = useHomeAssistant()
   const { stats: piholeStats, status: piholeStatus } = usePihole()
@@ -80,12 +109,12 @@ export default function App() {
           <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
             <ClockCard sunState={sunState} />
             <WeatherCard state={weatherState} sunState={sunState} forecast={weatherForecast} />
-            <CameraCard entities={ENTITIES.cameras} states={states} callService={callService} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
+            <CameraCard entities={ENTITIES.cameras} states={states} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
             <LightCard entities={ENTITIES.lights} states={states} toggleLight={toggleLight} setLightBrightness={setLightBrightness} setLightColor={setLightColor} />
             <PiholeCard stats={piholeStats} status={piholeStatus} />
             <PlexCard states={states} />
             <NetworkCard states={states} entities={ENTITIES.unifi} />
-            <NetdataCard cpu={netdata.cpu} ram={netdata.ram} net={netdata.net} disk={netdata.disk} load={netdata.load} temps={netdata.temps} status={netdata.status} />
+            <NetdataCard {...netdata} />
           </div>
         ) : isTablet ? (
           /* ── Tablet: two columns ── */
@@ -95,7 +124,7 @@ export default function App() {
               <WeatherCard state={weatherState} sunState={sunState} forecast={weatherForecast} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,1fr)', gap: 10 }}>
-              <CameraCard entities={ENTITIES.cameras} states={states} callService={callService} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
+              <CameraCard entities={ENTITIES.cameras} states={states} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
               <LightCard entities={ENTITIES.lights} states={states} toggleLight={toggleLight} setLightBrightness={setLightBrightness} setLightColor={setLightColor} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.3fr) minmax(0,1fr)', gap: 10 }}>
@@ -104,7 +133,7 @@ export default function App() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 10 }}>
               <NetworkCard states={states} entities={ENTITIES.unifi} />
-              <NetdataCard cpu={netdata.cpu} ram={netdata.ram} net={netdata.net} disk={netdata.disk} load={netdata.load} temps={netdata.temps} status={netdata.status} />
+              <NetdataCard {...netdata} />
             </div>
           </div>
         ) : (
@@ -115,49 +144,19 @@ export default function App() {
               <WeatherCard state={weatherState} sunState={sunState} forecast={weatherForecast} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
-              <CameraCard entities={ENTITIES.cameras} states={states} callService={callService} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
+              <CameraCard entities={ENTITIES.cameras} states={states} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
               <LightCard entities={ENTITIES.lights} states={states} toggleLight={toggleLight} setLightBrightness={setLightBrightness} setLightColor={setLightColor} />
               <NetworkCard states={states} entities={ENTITIES.unifi} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
               <PiholeCard stats={piholeStats} status={piholeStatus} />
               <PlexCard states={states} />
-              <NetdataCard cpu={netdata.cpu} ram={netdata.ram} net={netdata.net} disk={netdata.disk} load={netdata.load} temps={netdata.temps} status={netdata.status} />
+              <NetdataCard {...netdata} />
             </div>
           </div>
         )}
 
-        {/* Footer status bar */}
-        {(() => {
-          const services = [
-            { label: 'HA',      ok: connectionStatus === 'connected' },
-            { label: 'PIHOLE',  ok: piholeStatus === 'ok' },
-            { label: 'NETDATA', ok: netdata.status === 'ok' },
-          ]
-          const allOk = services.every(s => s.ok)
-          const pipelineColor = allOk ? T.green : T.red
-          const pipelineLabel = allOk ? 'PIPELINE OK' : 'DEGRADED'
-          return (
-            <div style={{
-              marginTop: 12, padding: '6px 12px',
-              border: `1px solid ${allOk ? T.border : T.red}`,
-              fontSize: 10, color: T.dim,
-              display: 'flex', justifyContent: 'space-between', flexWrap: 'wrap', gap: 4,
-            }}>
-              <span>$ ha-monitor --watch --interval=1s</span>
-              <span style={{ display: 'flex', gap: 12, alignItems: 'center' }}>
-                <span style={{ color: pipelineColor }}>● {pipelineLabel}</span>
-                {services.map(s => (
-                  <span key={s.label} style={{ color: s.ok ? T.dim : T.red }}>
-                    {s.label}:<span style={{ color: s.ok ? T.green : T.red }}>{s.ok ? 'OK' : 'ERR'}</span>
-                  </span>
-                ))}
-                <span>{ENTITIES.cameras.length} CAM</span>
-                <span>{ENTITIES.lights.length} LIGHT</span>
-              </span>
-            </div>
-          )
-        })()}
+        <StatusBar connectionStatus={connectionStatus} piholeStatus={piholeStatus} netdataStatus={netdata.status} />
       </div>
     </div>
   )

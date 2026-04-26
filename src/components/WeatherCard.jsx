@@ -1,3 +1,4 @@
+import { sunTime } from '../utils/time'
 import { TermFrame, T } from './TermFrame'
 
 const COND_LABEL = {
@@ -18,13 +19,6 @@ const COND_LABEL = {
   'windy-variant':   'WINDY',
 }
 
-const label = { fontSize: 10, color: T.dim, letterSpacing: '0.06em' }
-
-function sunTime(isoStr) {
-  if (!isoStr) return null
-  try { return new Date(isoStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }
-  catch { return null }
-}
 
 export function WeatherCard({ state, sunState, forecast: forecastProp = [] }) {
   if (!state || state.state === 'unavailable') {
@@ -66,10 +60,10 @@ export function WeatherCard({ state, sunState, forecast: forecastProp = [] }) {
         </div>
 
         <div style={{ flex: 1, fontSize: 10, color: T.cyan, lineHeight: 1.8 }}>
-          {feelsLike != null && <div><span style={label}>FEELS    </span>{Math.round(feelsLike)}°{tempUnit}</div>}
-          <div><span style={label}>HUMIDITY </span>{humidity != null ? `${humidity}%` : '—'}</div>
-          <div><span style={label}>WIND     </span>{windSpeed != null ? `${Math.round(windSpeed)} ${windUnit}` : '—'}</div>
-          {sunrise && sunset && <div><span style={label}>SUN      </span>{sunrise} → {sunset}</div>}
+          {feelsLike != null && <div><span style={T.label}>FEELS    </span>{Math.round(feelsLike)}°{tempUnit}</div>}
+          <div><span style={T.label}>HUMIDITY </span>{humidity != null ? `${humidity}%` : '—'}</div>
+          <div><span style={T.label}>WIND     </span>{windSpeed != null ? `${Math.round(windSpeed)} ${windUnit}` : '—'}</div>
+          {sunrise && sunset && <div><span style={T.label}>SUN      </span>{sunrise} → {sunset}</div>}
         </div>
       </div>
 

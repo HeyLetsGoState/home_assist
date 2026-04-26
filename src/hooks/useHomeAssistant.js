@@ -21,29 +21,33 @@ export function useHomeAssistant() {
     }
   }, [])
 
-  const callService = useCallback(
-    (domain, service, serviceData, { returnResponse = false } = {}) => {
-      return new Promise((resolve, reject) => {
+  // Base primitive: send a message, resolve/reject on result, reject on timeout
+  const callWsWithTimeout = useCallback(
+    (message, ms) =>
+      new Promise((resolve, reject) => {
         const id = nextId()
         pendingCalls.current[id] = { resolve, reject }
-        send({
-          id,
-          type: 'call_service',
-          domain,
-          service,
-          service_data: serviceData,
-          ...(returnResponse ? { return_response: true } : {}),
-        })
-        // Timeout after 8s
+        send({ id, ...message })
         setTimeout(() => {
           if (pendingCalls.current[id]) {
             delete pendingCalls.current[id]
-            reject(new Error('Service call timed out'))
+            reject(new Error('Timed out'))
           }
-        }, 8000)
-      })
-    },
+        }, ms)
+      }),
     [send]
+  )
+
+  const callService = useCallback(
+    (domain, service, serviceData, { returnResponse = false } = {}) =>
+      callWsWithTimeout({
+        type: 'call_service',
+        domain,
+        service,
+        service_data: serviceData,
+        ...(returnResponse ? { return_response: true } : {}),
+      }, 8000),
+    [callWsWithTimeout]
   )
 
   const subscribeMessage = useCallback((message, callback) => {
@@ -54,18 +58,10 @@ export function useHomeAssistant() {
   }, [send])
 
   // One-shot WS call (request → result) for any message type
-  const callWs = useCallback((message) =>
-    new Promise((resolve, reject) => {
-      const id = nextId()
-      pendingCalls.current[id] = { resolve, reject }
-      send({ id, ...message })
-      setTimeout(() => {
-        if (pendingCalls.current[id]) {
-          delete pendingCalls.current[id]
-          reject(new Error('WS call timed out'))
-        }
-      }, 10000)
-    }), [send])
+  const callWs = useCallback(
+    (message) => callWsWithTimeout(message, 10000),
+    [callWsWithTimeout]
+  )
 
   // Fire-and-forget raw send (used for WebRTC candidate forwarding)
   const sendRaw = useCallback((message) => {
@@ -74,19 +70,11 @@ export function useHomeAssistant() {
   }, [send])
 
   const getStreamUrl = useCallback(
-    (entityId) =>
-      new Promise((resolve, reject) => {
-        const id = nextId()
-        pendingCalls.current[id] = { resolve, reject }
-        send({ id, type: 'camera/stream', entity_id: entityId, format: 'hls' })
-        setTimeout(() => {
-          if (pendingCalls.current[id]) {
-            delete pendingCalls.current[id]
-            reject(new Error('Stream request timed out'))
-          }
-        }, 15000)
-      }),
-    [send]
+    (entityId) => callWsWithTimeout(
+      { type: 'camera/stream', entity_id: entityId, format: 'hls' },
+      15000
+    ),
+    [callWsWithTimeout]
   )
 
   const toggleLight = useCallback(

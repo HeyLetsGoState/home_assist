@@ -1,19 +1,9 @@
-import { useState, useEffect } from 'react'
+import { useClock } from '../hooks/useClock'
+import { sunTime } from '../utils/time'
 import { TermFrame, T } from './TermFrame'
 
-function sunTime(isoStr) {
-  if (!isoStr) return '—'
-  try { return new Date(isoStr).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false }) }
-  catch { return '—' }
-}
-
 export function ClockCard({ sunState }) {
-  const [time, setTime] = useState(new Date())
-
-  useEffect(() => {
-    const id = setInterval(() => setTime(new Date()), 1000)
-    return () => clearInterval(id)
-  }, [])
+  const time = useClock()
 
   const hhmm = time.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })
   const ss = String(time.getSeconds()).padStart(2, '0')
@@ -23,8 +13,8 @@ export function ClockCard({ sunState }) {
   const dayOfYear = Math.floor((time - new Date(time.getFullYear(), 0, 0)) / 86_400_000)
   const epoch = Math.floor(time.getTime() / 1000)
 
-  const sunrise = sunTime(sunState?.attributes?.next_rising)
-  const sunset  = sunTime(sunState?.attributes?.next_setting)
+  const sunrise = sunTime(sunState?.attributes?.next_rising) ?? '—'
+  const sunset  = sunTime(sunState?.attributes?.next_setting) ?? '—'
 
   return (
     <TermFrame title="SYSCLOCK" accent={T.amber}>

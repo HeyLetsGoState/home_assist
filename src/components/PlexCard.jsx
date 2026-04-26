@@ -1,6 +1,5 @@
+import { PLEX_SENSOR } from '../config'
 import { TermFrame, T } from './TermFrame'
-
-const PLEX_SENSOR = 'sensor.thebigblackbox'
 
 export function PlexCard({ states }) {
   const sensor = states[PLEX_SENSOR]

@@ -37,3 +37,9 @@ export const NETDATA_POLL_INTERVAL = 5_000 // ms
 // Set VITE_PIHOLE_PASSWORD in .env, or paste it directly below.
 export const PIHOLE_PASSWORD = import.meta.env.VITE_PIHOLE_PASSWORD || ''
 export const PIHOLE_POLL_INTERVAL = 30_000 // ms
+
+// ─── UI Constants ────────────────────────────────────────────────────────────
+export const SPARKLINE_HISTORY = 30 // data points retained for sparkline charts
+
+// ─── Media / Plex ────────────────────────────────────────────────────────────
+export const PLEX_SENSOR = 'sensor.thebigblackbox'

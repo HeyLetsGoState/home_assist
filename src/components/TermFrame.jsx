@@ -6,6 +6,8 @@ export const T = {
   green:  '#6ee7a7',
   bg2:    '#080b0e',
   border: '#1a2428',
+  // Shared label style used across cards — spread and override marginBottom as needed
+  label:  { fontSize: 10, color: '#3a5a55', letterSpacing: '0.06em' },
 }
 
 export function TermFrame({ title, accent = T.cyan, children, right, style }) {

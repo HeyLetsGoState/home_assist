@@ -220,6 +220,7 @@ function CamTile({ entity, state, cameraState, batteryState, getStreamUrl, callW
     if (!entity.cameraId) return
     setRefreshing(true)
     setBust(Date.now())
+    await new Promise(r => setTimeout(r, 1500))
     setRefreshing(false)
   }, [entity.cameraId])
 
@@ -284,7 +285,7 @@ function CamTile({ entity, state, cameraState, batteryState, getStreamUrl, callW
   )
 }
 
-export function CameraCard({ entities, states, callService, getStreamUrl, callWs, sendRaw, subscribeMessage }) {
+export function CameraCard({ entities, states, getStreamUrl, callWs, sendRaw, subscribeMessage }) {
   const recentCount = entities.filter((e) => {
     const s = states[e.id]
     if (!s || s.state === 'unknown' || s.state === 'unavailable') return false

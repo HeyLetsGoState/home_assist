@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { formatDistanceToNow } from 'date-fns'
 import { TermFrame, TermSparkline, T } from './TermFrame'
-
-const HIST = 30
+import { SPARKLINE_HISTORY } from '../config'
 
 function uptimeSince(isoString) {
   if (!isoString) return '—'
@@ -20,8 +19,8 @@ export function NetworkCard({ states, entities }) {
   const isOnline  = stateEnt?.state === 'connected'
   const uptimeStr = uptimeSince(uptime?.state)
 
-  const [cpuHistory, setCpuHistory] = useState(() => Array(HIST).fill(0))
-  const [memHistory, setMemHistory] = useState(() => Array(HIST).fill(0))
+  const [cpuHistory, setCpuHistory] = useState(() => Array(SPARKLINE_HISTORY).fill(0))
+  const [memHistory, setMemHistory] = useState(() => Array(SPARKLINE_HISTORY).fill(0))
 
   useEffect(() => {
     if (!isNaN(cpuVal)) setCpuHistory((h) => [...h.slice(1), cpuVal])
@@ -31,7 +30,7 @@ export function NetworkCard({ states, entities }) {
     if (!isNaN(memVal)) setMemHistory((h) => [...h.slice(1), memVal])
   }, [memory?.state]) // eslint-disable-line react-hooks/exhaustive-deps
 
-  const statLabel = { fontSize: 10, color: T.dim, letterSpacing: '0.06em', marginBottom: 4 }
+  const statLabel = { ...T.label, marginBottom: 4 }
 
   return (
     <TermFrame title="ROUTER · UNIFI DREAM MACHINE" accent={T.cyan} right={`UP ${uptimeStr.toUpperCase()}`}>
