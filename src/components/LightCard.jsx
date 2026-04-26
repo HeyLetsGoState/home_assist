@@ -42,21 +42,28 @@ function LightRow({ entity, state, toggleLight, setLightBrightness, setLightColo
 
   return (
     <div style={{ padding: '8px 0', borderBottom: isLast ? 'none' : `1px dotted ${T.border}` }}>
-      <div style={{ display: 'grid', gridTemplateColumns: '14px 1fr auto auto', gap: 8, alignItems: 'center' }}>
-        {/* Terminal-style toggle square */}
+      <div style={{ display: 'grid', gridTemplateColumns: '32px 1fr auto auto', gap: 8, alignItems: 'center' }}>
+        {/* Terminal-style toggle — larger hit area, small visual square */}
         <button
           onClick={handleToggle}
           disabled={toggling}
           aria-label={`Toggle ${entity.name}`}
           style={{
+            width: 32, height: 32,
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            background: 'transparent', border: 'none',
+            cursor: 'pointer', padding: 0, flexShrink: 0,
+          }}
+        >
+          <div style={{
             width: 13, height: 13,
             border: `1px solid ${isOn ? T.amber : T.dim}`,
             background: isOn ? T.amber : 'transparent',
             boxShadow: isOn ? `0 0 8px ${T.amber}` : 'none',
-            cursor: 'pointer', padding: 0, flexShrink: 0,
-            transition: 'all 0.15s',
-          }}
-        />
+            transition: 'background 0.15s, border-color 0.15s, box-shadow 0.15s',
+            pointerEvents: 'none',
+          }} />
+        </button>
 
         <span style={{ color: isOn ? T.amber : T.dim, textTransform: 'uppercase', fontSize: 10, letterSpacing: '0.08em' }}>
           {entity.name}
@@ -66,19 +73,27 @@ function LightRow({ entity, state, toggleLight, setLightBrightness, setLightColo
           {isOn ? `${displayBrightness}%` : 'OFF'}
         </span>
 
-        {/* Color swatch */}
+        {/* Color swatch — larger hit area wraps small visual swatch */}
         {isOn ? (
           <div style={{ position: 'relative' }}>
             <button
               onClick={() => colorInputRef.current?.click()}
               title="Change color"
+              aria-label="Change light color"
               style={{
+                width: 32, height: 32,
+                display: 'flex', alignItems: 'center', justifyContent: 'center',
+                background: 'transparent', border: 'none',
+                cursor: 'pointer', padding: 0,
+              }}
+            >
+              <div style={{
                 width: 14, height: 14,
                 background: currentHex,
                 border: `1px solid ${T.border}`,
-                cursor: 'pointer', display: 'block',
-              }}
-            />
+                pointerEvents: 'none',
+              }} />
+            </button>
             <input
               ref={colorInputRef}
               type="color"
@@ -88,7 +103,7 @@ function LightRow({ entity, state, toggleLight, setLightBrightness, setLightColo
               tabIndex={-1}
             />
           </div>
-        ) : <div style={{ width: 14 }} />}
+        ) : <div style={{ width: 32 }} />}
       </div>
 
       {isOn && (
@@ -98,7 +113,7 @@ function LightRow({ entity, state, toggleLight, setLightBrightness, setLightColo
           onChange={handleSliderChange}
           onMouseUp={handleSliderCommit}
           onTouchEnd={handleSliderCommit}
-          style={{ width: '100%', marginTop: 6, accentColor: T.amber }}
+          style={{ width: '100%', marginTop: 6, accentColor: T.amber, height: 20, cursor: 'pointer' }}
           aria-label={`${entity.name} brightness`}
         />
       )}
