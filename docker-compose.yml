@@ -1,0 +1,16 @@
+services:
+  dashboard:
+    build:
+      context: .
+      args:
+        # Baked into the JS bundle at build time
+        VITE_HA_URL: ${VITE_HA_URL}
+        VITE_HA_TOKEN: ${VITE_HA_TOKEN}
+        VITE_PIHOLE_PASSWORD: ${VITE_PIHOLE_PASSWORD}
+    environment:
+      # Injected into nginx at container startup (proxy targets)
+      PIHOLE_HOST: ${PIHOLE_HOST}
+      NETDATA_HOST: ${NETDATA_HOST}
+    ports:
+      - "3000:80"
+    restart: unless-stopped

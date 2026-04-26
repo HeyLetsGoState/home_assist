@@ -1,0 +1,55 @@
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background: #06080a;
+    color: #7fd9c8;
+  }
+  * { box-sizing: border-box; }
+  ::-webkit-scrollbar { width: 6px; height: 6px; }
+  ::-webkit-scrollbar-track { background: #080b0e; }
+  ::-webkit-scrollbar-thumb { background: #1a2428; border-radius: 9999px; }
+  ::-webkit-scrollbar-thumb:hover { background: #3a5a55; }
+}
+
+@keyframes term-blink {
+  0%, 49% { opacity: 1; }
+  50%, 100% { opacity: 0.2; }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out forwards;
+}
+
+/* Range slider — terminal amber style */
+input[type='range'] {
+  appearance: none;
+  height: 2px;
+  background: #1a2428;
+  cursor: pointer;
+  outline: none;
+}
+input[type='range']::-webkit-slider-thumb {
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  background: #ffb454;
+  border: none;
+  box-shadow: 0 0 6px #ffb45466;
+}
+input[type='range']::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  background: #ffb454;
+  border: none;
+  box-shadow: 0 0 6px #ffb45466;
+}

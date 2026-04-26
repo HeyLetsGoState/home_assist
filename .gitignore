@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.env
+*.local
+.gstack/
+ha-dashboard.tar
+ha-dashboard.tar.gz
