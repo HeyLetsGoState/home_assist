@@ -57,6 +57,15 @@ export default function App() {
       padding: isMobile ? '12px' : '20px 24px 24px',
       position: 'relative',
     }}>
+      <style>{`
+        button:focus-visible, input:focus-visible {
+          outline: 1px solid #7fd9c8;
+          outline-offset: 2px;
+        }
+        button:focus:not(:focus-visible), input:focus:not(:focus-visible) {
+          outline: none;
+        }
+      `}</style>
       {/* CRT scanline overlay */}
       <div style={{
         position: 'fixed', inset: 0, pointerEvents: 'none', zIndex: 100,
