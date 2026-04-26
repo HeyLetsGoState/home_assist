@@ -24,7 +24,7 @@ This is a single-page React dashboard for a Home Assistant setup, styled as a re
 
 **Home Assistant (`useHomeAssistant`)** — persistent WebSocket connection to HA's `/api/websocket`. On connect it fetches all states via `get_states`, then subscribes to `state_changed` events for live updates. The `states` object is a flat map of `entity_id → HA state object`, passed directly to cards. Service calls (light toggle, brightness, color, weather forecasts) go through the same socket via `callService`.
 
-**Pi-hole (`usePihole`)** — HTTP polling every 30s against Pi-hole v6 API. Auth is handled by POSTing to `/api/auth` to get a session SID (cached for ~29 min). Both dev and production proxy `/api/pihole/*` to avoid CORS — Vite dev server proxies to `192.168.0.26:8181`, nginx proxies the same in production.
+**Pi-hole (`usePihole`)** — HTTP polling every 30s against Pi-hole v6 API. Auth is handled by POSTing to `/api/auth` to get a session SID (cached for ~29 min). Both dev and production proxy `/api/pihole/*` to avoid CORS — Vite dev server proxies to `$PIHOLE_HOST`, nginx proxies the same in production.
 
 ### Configuration (`src/config.js`)
 
