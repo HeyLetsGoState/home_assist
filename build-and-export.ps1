@@ -5,13 +5,24 @@ $ErrorActionPreference = "Stop"
 $image = "ha-dashboard"
 $output = "ha-dashboard.tar.gz"
 
+# Read VITE_* values from .env file
+$envFile = Join-Path $PSScriptRoot ".env"
+$envVars = @{}
+Get-Content $envFile | ForEach-Object {
+  if ($_ -match '^\s*([^#][^=]+)=(.*)$') {
+    $key = $Matches[1].Trim()
+    $val = $Matches[2].Trim().Trim('"')
+    $envVars[$key] = $val
+  }
+}
+
 Write-Host "`n==> Building Docker image..." -ForegroundColor Cyan
 docker build `
-  --build-arg VITE_HA_URL=$env:VITE_HA_URL `
-  --build-arg VITE_HA_TOKEN=$env:VITE_HA_TOKEN `
-  --build-arg VITE_PIHOLE_PASSWORD=$env:VITE_PIHOLE_PASSWORD `
-  --build-arg VITE_PORTAINER_TOKEN=$env:VITE_PORTAINER_TOKEN `
-  --build-arg VITE_TAUTULLI_TOKEN=$env:VITE_TAUTULLI_TOKEN `
+  --build-arg "VITE_HA_URL=$($envVars['VITE_HA_URL'])" `
+  --build-arg "VITE_HA_TOKEN=$($envVars['VITE_HA_TOKEN'])" `
+  --build-arg "VITE_PIHOLE_PASSWORD=$($envVars['VITE_PIHOLE_PASSWORD'])" `
+  --build-arg "VITE_PORTAINER_TOKEN=$($envVars['VITE_PORTAINER_TOKEN'])" `
+  --build-arg "VITE_TAUTULLI_TOKEN=$($envVars['VITE_TAUTULLI_TOKEN'])" `
   -t $image .
 
 if ($LASTEXITCODE -ne 0) {
