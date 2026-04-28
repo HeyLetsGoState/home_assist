@@ -10,6 +10,8 @@ docker build `
   --build-arg VITE_HA_URL=$env:VITE_HA_URL `
   --build-arg VITE_HA_TOKEN=$env:VITE_HA_TOKEN `
   --build-arg VITE_PIHOLE_PASSWORD=$env:VITE_PIHOLE_PASSWORD `
+  --build-arg VITE_PORTAINER_TOKEN=$env:VITE_PORTAINER_TOKEN `
+  --build-arg VITE_TAUTULLI_TOKEN=$env:VITE_TAUTULLI_TOKEN `
   -t $image .
 
 if ($LASTEXITCODE -ne 0) {
