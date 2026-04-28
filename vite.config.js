@@ -19,6 +19,16 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           rewrite: (path) => path.replace(/^\/api\/netdata/, ''),
         },
+        '/api/portainer': {
+          target: 'http://portainer.home:9000',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/portainer/, ''),
+        },
+        '/api/tautulli': {
+          target: 'http://192.168.0.26:8182',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api\/tautulli/, ''),
+        },
       },
     },
   }

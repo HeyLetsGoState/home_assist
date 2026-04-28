@@ -1,6 +1,8 @@
 import { useHomeAssistant } from './hooks/useHomeAssistant'
 import { usePihole } from './hooks/usePihole'
 import { useNetdata } from './hooks/useNetdata'
+import { usePortainer } from './hooks/usePortainer'
+import { useTautulli } from './hooks/useTautulli'
 import { useBreakpoint } from './hooks/useBreakpoint'
 import { ENTITIES } from './config'
 import { useState, useEffect } from 'react'
@@ -48,6 +50,8 @@ export default function App() {
   const { states, connectionStatus, toggleLight, setLightBrightness, setLightColor, callService, getStreamUrl, callWs, sendRaw, subscribeMessage } = useHomeAssistant()
   const { stats: piholeStats, status: piholeStatus } = usePihole()
   const netdata = useNetdata()
+  const portainer = usePortainer()
+  const tautulli  = useTautulli()
   const bp = useBreakpoint()
   const isTablet = bp === 'md'
   const isMobile = bp === 'sm'
@@ -112,8 +116,8 @@ export default function App() {
             <CameraCard entities={ENTITIES.cameras} states={states} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
             <LightCard entities={ENTITIES.lights} states={states} toggleLight={toggleLight} setLightBrightness={setLightBrightness} setLightColor={setLightColor} />
             <PiholeCard stats={piholeStats} status={piholeStatus} />
-            <PlexCard states={states} />
-            <NetworkCard states={states} entities={ENTITIES.unifi} />
+            <PlexCard tautulli={tautulli} />
+            <NetworkCard states={states} entities={ENTITIES.unifi} portainer={portainer} />
             <NetdataCard {...netdata} />
           </div>
         ) : isTablet ? (
@@ -129,10 +133,10 @@ export default function App() {
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.3fr) minmax(0,1fr)', gap: 10 }}>
               <PiholeCard stats={piholeStats} status={piholeStatus} />
-              <PlexCard states={states} />
+              <PlexCard tautulli={tautulli} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1fr) minmax(0,1fr)', gap: 10 }}>
-              <NetworkCard states={states} entities={ENTITIES.unifi} />
+              <NetworkCard states={states} entities={ENTITIES.unifi} portainer={portainer} />
               <NetdataCard {...netdata} />
             </div>
           </div>
@@ -146,11 +150,11 @@ export default function App() {
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.2fr) minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
               <CameraCard entities={ENTITIES.cameras} states={states} getStreamUrl={getStreamUrl} callWs={callWs} sendRaw={sendRaw} subscribeMessage={subscribeMessage} />
               <LightCard entities={ENTITIES.lights} states={states} toggleLight={toggleLight} setLightBrightness={setLightBrightness} setLightColor={setLightColor} />
-              <NetworkCard states={states} entities={ENTITIES.unifi} />
+              <NetworkCard states={states} entities={ENTITIES.unifi} portainer={portainer} />
             </div>
             <div style={{ display: 'grid', gridTemplateColumns: 'minmax(0,1.3fr) minmax(0,1fr) minmax(0,1fr)', gap: 12 }}>
               <PiholeCard stats={piholeStats} status={piholeStatus} />
-              <PlexCard states={states} />
+              <PlexCard tautulli={tautulli} />
               <NetdataCard {...netdata} />
             </div>
           </div>

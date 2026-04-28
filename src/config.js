@@ -41,5 +41,13 @@ export const PIHOLE_POLL_INTERVAL = 30_000 // ms
 // ─── UI Constants ────────────────────────────────────────────────────────────
 export const SPARKLINE_HISTORY = 30 // data points retained for sparkline charts
 
+// ─── Portainer Configuration ─────────────────────────────────────────────────
+export const PORTAINER_TOKEN = import.meta.env.VITE_PORTAINER_TOKEN || ''
+export const PORTAINER_POLL_INTERVAL = 30_000 // ms
+
+// ─── Tautulli Configuration ───────────────────────────────────────────────────
+export const TAUTULLI_TOKEN = import.meta.env.VITE_TAUTULLI_TOKEN || ''
+export const TAUTULLI_POLL_INTERVAL = 15_000 // ms
+
 // ─── Media / Plex ────────────────────────────────────────────────────────────
 export const PLEX_SENSOR = 'sensor.thebigblackbox'
